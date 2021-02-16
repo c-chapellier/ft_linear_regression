@@ -91,6 +91,46 @@ class linear_regression:
     else:
       print("Model not trained.")
 
+  def plot_3d_cost(self):
+    grid_size = 40
+    cost_grid = np.empty((grid_size, grid_size))
+
+    X = np.empty((1, grid_size))
+    Y = np.empty((1, grid_size))
+
+    m = len(self.__x)
+    print(self.__theta0, self.__theta1)
+
+    for x_i in range(grid_size):
+      X[0][x_i] = self.__theta0 + ((x_i - (grid_size / 2)) * (self.__theta0 / 10))
+    for y_i in range(grid_size):
+      Y[0][y_i] = self.__theta1 + ((y_i - (grid_size / 2)) * (self.__theta1 / 5))
+
+    for x_i in range(grid_size):
+      for y_i in range(grid_size):
+        cost = 0
+        for i in range(m):
+          error = (X[0][x_i] + (Y[0][y_i] * self.__x[i])) - self.__y[i]
+          cost += (error ** 2) / m
+        cost_grid[x_i][y_i] = cost
+
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+
+    X, Y = np.meshgrid(X, Y)
+
+    # Gx, Gy = np.gradient(cost_grid)
+    # G = ((Gx ** 2) + (Gy ** 2)) ** 0.5
+    # N = G / G.max()
+    # surf = ax.plot_surface(X, Y, cost_grid, rstride=1, cstride=1, facecolors=cm.jet(N), linewidth=0, antialiased=False, shade=False)
+
+    surf = ax.plot_surface(X, Y, cost_grid, cmap=cm.coolwarm, linewidth=0, antialiased=False)
+
+    plt.title("cost of the model with thetas");
+    plt.xlabel("theta0")
+    plt.ylabel("theta1")
+    plt.show()
+
 if __name__ == "__main__":
   argc = len(sys.argv)
   if argc < 2:
